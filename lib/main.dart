@@ -1,9 +1,11 @@
 import 'package:beclean_user/screens/login_screen.dart';
+import 'package:beclean_user/screens/nav/home_nav.dart';
 import 'package:beclean_user/screens/onboarding_screen_tree.dart';
-import 'package:beclean_user/screens/onboarding_screen_two.dart';
 import 'package:beclean_user/screens/register_screen.dart';
 import 'package:beclean_user/screens/splash_screen_one.dart';
+import 'package:beclean_user/services/bloc/register_bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 void main() => runApp(MyApp());
@@ -15,11 +17,6 @@ final GoRouter _router = GoRouter(routes: <RouteBase>[
       },
       routes: <RouteBase>[
         GoRoute(
-            path: 'OnBoardingTwo',
-            builder: (BuildContext context, GoRouterState state) {
-              return OnboardingScreenTwo();
-            }),
-        GoRoute(
             path: 'OnBoardingTree',
             builder: (BuildContext context, GoRouterState state) {
               return OnBoardingTree();
@@ -30,7 +27,8 @@ final GoRouter _router = GoRouter(routes: <RouteBase>[
         ),
         GoRoute(
             path: 'RegisterScreen',
-            builder: (context, state) => RegisterScreen())
+            builder: (context, state) => RegisterScreen()),
+        GoRoute(path: "HomeNav", builder: (context, state) => HomeNav())
         // GoRouter(routes: routes)
       ])
 ]);
@@ -40,20 +38,13 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
-      debugShowCheckedModeBanner: false,
-      routerConfig: _router,
-      theme:
-          ThemeData(colorScheme: ColorScheme.fromSeed(seedColor: Colors.green)),
-    );
-  }
-}
-
-class Sample extends StatelessWidget {
-  const Sample({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const Placeholder();
+    return BlocProvider(
+        create: (context) => RegisterBloc(),
+        child: MaterialApp(
+          debugShowCheckedModeBanner: false,
+          home: SplashScreenOne(),
+          theme: ThemeData(
+              colorScheme: ColorScheme.fromSeed(seedColor: Colors.green)),
+        ));
   }
 }

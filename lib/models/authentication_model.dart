@@ -8,7 +8,7 @@ class AuthenticationModel {
       {required this.name,
       required this.nohp,
       required this.email,
-      this.passwod = ''});
+      required this.passwod});
 
   Map<String, dynamic> toJson() =>
       {'name': name, 'email': email, 'nohp': nohp, 'password': passwod};

@@ -1,6 +1,9 @@
+import 'dart:convert';
+import 'dart:math';
 import 'package:beclean_user/screens/nav/home_nav.dart';
+import 'package:beclean_user/screens/register_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
+import 'package:http/http.dart' as http;
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -10,11 +13,55 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  bool isLoading = false;
+  final String apiUrl = 'http://beclean.unimal.link/api/v1/auth/login';
+
+  Future<void> _loginUser(String email, String password) async {
+    setState(() {
+      isLoading = true;
+    });
+    final Map<String, dynamic> requestData = {
+      'email': email,
+      'password': password,
+    };
+
+    try {
+      final response = await http.post(
+        Uri.parse(apiUrl),
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode(requestData),
+      );
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Login berhasil!")),
+        );
+        debugPrint("Informasi Response : $data");
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+              content: Center(child: Text("Login gagal! ${response.body}"))),
+        );
+      }
+    } catch (e) {
+      // ScaffoldMessenger.of(context).showSnackBar(
+      //   SnackBar(content: Text("Terjadi kesalahan")),
+      // );
+    }
+    setState(() {
+      isLoading = false;
+    });
+  }
+
+  bool _obscureText = true;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Padding(
-        padding: EdgeInsets.all(14.0),
+        padding: const EdgeInsets.all(14.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -27,42 +74,54 @@ class _LoginScreenState extends State<LoginScreen> {
                   color: Colors.green[400]),
               textAlign: TextAlign.center,
             ),
-            SizedBox(height: 40),
+            const SizedBox(height: 40),
             TextField(
+              controller: emailController,
               decoration: InputDecoration(
                 labelText: 'Email',
                 hintText: 'Masukkan email anda',
                 border: OutlineInputBorder(),
               ),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             TextField(
-              controller: null,
+              controller: passwordController,
               decoration: InputDecoration(
                 labelText: 'Password',
                 hintText: 'Masukkan password',
-                border: OutlineInputBorder(),
-                suffixIcon: Icon(Icons.visibility_off),
+                border: const OutlineInputBorder(),
+                suffixIcon: IconButton(
+                  icon: Icon(
+                    _obscureText ? Icons.visibility_off : Icons.visibility,
+                  ),
+                  onPressed: () {
+                    setState(() {
+                      _obscureText = !_obscureText;
+                    });
+                  },
+                ),
               ),
-              obscureText: true,
+              obscureText: _obscureText,
             ),
-            SizedBox(height: 40),
+            const SizedBox(height: 40),
             ElevatedButton(
               onPressed: () {
+                _loginUser(emailController.text, passwordController.text);
+                // Navigator.push(context, '/HomeNav');
                 Navigator.push(context,
                     MaterialPageRoute(builder: (context) => HomeNav()));
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.green,
-                padding: EdgeInsets.symmetric(vertical: 16.0),
+                padding: const EdgeInsets.symmetric(vertical: 16.0),
               ),
-              child: Text(
+              child: const Text(
                 'Masuk',
                 style: TextStyle(fontSize: 20.0, color: Colors.white),
               ),
             ),
-            SizedBox(height: 20),
-            Row(
+            const SizedBox(height: 20),
+            const Row(
               children: [
                 Expanded(child: Divider()),
                 Padding(
@@ -74,12 +133,13 @@ class _LoginScreenState extends State<LoginScreen> {
                 )
               ],
             ),
-            SizedBox(
+            const SizedBox(
               height: 20.0,
             ),
             GestureDetector(
               onTap: () {
-                context.go('/RegisterScreen');
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => RegisterScreen()));
               },
               child: Text(
                 'Daftar Sekarang',

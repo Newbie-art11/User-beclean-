@@ -1,5 +1,5 @@
+import 'package:beclean_user/screens/login_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 
 class OnBoardingTree extends StatelessWidget {
   const OnBoardingTree({super.key});
@@ -46,7 +46,10 @@ class OnBoardingTree extends StatelessWidget {
               height: 50.0,
             ),
             ElevatedButton(
-              onPressed: () => context.go('/LoginScreen'),
+              onPressed: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => LoginScreen()));
+              },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.green,
                 shape: RoundedRectangleBorder(
