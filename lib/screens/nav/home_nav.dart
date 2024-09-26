@@ -78,7 +78,6 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Column(
           children: [
             Container(
-              padding: EdgeInsets.all(16.0),
               color: Colors.green,
               child: Column(
                 children: [
@@ -88,7 +87,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         radius: 30,
                         backgroundImage: AssetImage('assets/img/icon4.png'),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 10,
                       ),
                       Column(

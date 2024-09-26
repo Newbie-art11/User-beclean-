@@ -1,9 +1,7 @@
-import 'dart:convert';
-import 'dart:math';
-import 'package:beclean_user/screens/nav/home_nav.dart';
+import 'package:beclean_user/provider/user_provider.dart';
 import 'package:beclean_user/screens/register_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -13,52 +11,16 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final TextEditingController emailController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
+  final TextEditingController emailController =
+      TextEditingController(text: 'aa@gmail.com');
+  final TextEditingController passwordController =
+      TextEditingController(text: '12345678');
   bool isLoading = false;
-  final String apiUrl = 'http://beclean.unimal.link/api/v1/auth/login';
-
-  Future<void> _loginUser(String email, String password) async {
-    setState(() {
-      isLoading = true;
-    });
-    final Map<String, dynamic> requestData = {
-      'email': email,
-      'password': password,
-    };
-
-    try {
-      final response = await http.post(
-        Uri.parse(apiUrl),
-        headers: {"Content-Type": "application/json"},
-        body: jsonEncode(requestData),
-      );
-
-      if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Login berhasil!")),
-        );
-        debugPrint("Informasi Response : $data");
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-              content: Center(child: Text("Login gagal! ${response.body}"))),
-        );
-      }
-    } catch (e) {
-      // ScaffoldMessenger.of(context).showSnackBar(
-      //   SnackBar(content: Text("Terjadi kesalahan")),
-      // );
-    }
-    setState(() {
-      isLoading = false;
-    });
-  }
-
   bool _obscureText = true;
+  final _formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
+    final authProvider = Provider.of<UserProvider>(context);
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(14.0),
@@ -106,10 +68,11 @@ class _LoginScreenState extends State<LoginScreen> {
             const SizedBox(height: 40),
             ElevatedButton(
               onPressed: () {
-                _loginUser(emailController.text, passwordController.text);
-                // Navigator.push(context, '/HomeNav');
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => HomeNav()));
+                authProvider.loginUser(
+                    emailController.text, passwordController.text, context);
+
+                Navigator.of(context)
+                    .pushNamedAndRemoveUntil('/home', (routes) => false);
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.green,
@@ -152,5 +115,12 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    emailController.dispose();
+    passwordController.dispose();
+    super.dispose();
   }
 }
