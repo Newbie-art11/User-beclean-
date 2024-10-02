@@ -40,96 +40,110 @@ class _RegisterScreenState extends State<RegisterScreen> {
             ),
           ),
         ),
-        body: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Form(
-              key: _formKey,
-              child: Column(
-                children: [
-                  const SizedBox(
-                    height: 20.0,
-                  ),
-                  TextFormField(
-                    controller: nameController,
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'Nama',
-                      hintText: 'Masukkan Nama anda',
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Form(
+                key: _formKey,
+                child: Column(
+                  children: [
+                    const SizedBox(
+                      height: 20.0,
                     ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Nama Tidak Boleh Kosong';
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(
-                    height: 20.0,
-                  ),
-                  TextFormField(
-                    controller: phoneController,
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'No. HP',
-                      hintText: 'Masukkan No. HP anda',
-                    ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'No. HP tidak boleh kosong';
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(
-                    height: 20.0,
-                  ),
-                  TextFormField(
-                    controller: emailController,
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'E-mail',
-                      hintText: 'Masukkan E-mail anda',
-                    ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'E-mail tidak boleh kosong';
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(
-                    height: 20.0,
-                  ),
-                  TextFormField(
-                    controller: passwordController,
-                    decoration: const InputDecoration(
-                        labelText: 'Password',
-                        hintText: 'Panjang Password minimal 8',
-                        border: OutlineInputBorder()),
-                    obscureText: true,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Password tidak boleh kosong';
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(height: 20),
-                  ElevatedButton(
-                      onPressed: () {
-                        if (_formKey.currentState!.validate()) {
-                          final newUser = UserModel(
-                              name: nameController.text,
-                              email: emailController.text,
-                              password: passwordController.text,
-                              phone: phoneController.text);
-                          userProvider.createUser(
-                              newUser, context, _scaffoldMessengerKey);
+                    TextFormField(
+                      controller: nameController,
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(),
+                        labelText: 'Nama',
+                        hintText: 'Masukkan Nama anda',
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Nama Tidak Boleh Kosong';
                         }
+                        return null;
                       },
-                      child: const Text("Register"))
-                ],
-              )),
+                    ),
+                    const SizedBox(
+                      height: 20.0,
+                    ),
+                    TextFormField(
+                      controller: phoneController,
+                      keyboardType: TextInputType.number,
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(),
+                        labelText: 'No. HP',
+                        hintText: 'Masukkan No. HP anda',
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'No. HP tidak boleh kosong';
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(
+                      height: 20.0,
+                    ),
+                    TextFormField(
+                      controller: emailController,
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(),
+                        labelText: 'E-mail',
+                        hintText: 'Masukkan E-mail anda',
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'E-mail tidak boleh kosong';
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(
+                      height: 20.0,
+                    ),
+                    TextFormField(
+                      controller: passwordController,
+                      decoration: const InputDecoration(
+                          labelText: 'Password',
+                          hintText: 'Panjang Password minimal 8',
+                          border: OutlineInputBorder()),
+                      obscureText: true,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Password tidak boleh kosong';
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: 20),
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.green,
+                          padding: const EdgeInsets.symmetric(vertical: 16.0),
+                        ),
+                        onPressed: () {
+                          if (_formKey.currentState!.validate()) {
+                            final newUser = UserModel(
+                                name: nameController.text,
+                                email: emailController.text,
+                                password: passwordController.text,
+                                phone: phoneController.text);
+                            userProvider.createUser(
+                                newUser, context, _scaffoldMessengerKey);
+                          }
+                        },
+                        child: const Text(
+                          'Daftar',
+                          style: TextStyle(fontSize: 20.0, color: Colors.white),
+                        ),
+                      ),
+                    )
+                  ],
+                )),
+          ),
         ),
       ),
     );

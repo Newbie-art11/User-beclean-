@@ -52,7 +52,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               icon: Icons.exit_to_app,
               title: 'Keluar',
               onTap: () {
-                // Handle tap
+                Navigator.of(context).pushNamed('/LoginScreen');
               },
             ),
           ],

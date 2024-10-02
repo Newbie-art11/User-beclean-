@@ -1,5 +1,4 @@
 import 'package:beclean_user/provider/user_provider.dart';
-import 'package:beclean_user/screens/register_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -70,7 +69,6 @@ class _LoginScreenState extends State<LoginScreen> {
               onPressed: () {
                 authProvider.loginUser(
                     emailController.text, passwordController.text, context);
-
                 Navigator.of(context)
                     .pushNamedAndRemoveUntil('/home', (routes) => false);
               },
@@ -99,10 +97,9 @@ class _LoginScreenState extends State<LoginScreen> {
             const SizedBox(
               height: 20.0,
             ),
-            GestureDetector(
-              onTap: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => RegisterScreen()));
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pushNamed('/RegisterScreen');
               },
               child: Text(
                 'Daftar Sekarang',

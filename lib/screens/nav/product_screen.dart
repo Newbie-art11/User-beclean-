@@ -1,4 +1,6 @@
+import 'package:beclean_user/provider/product_provider/product_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class ProductScreen extends StatefulWidget {
   const ProductScreen({super.key});
@@ -43,27 +45,21 @@ class _ProductScreenState extends State<ProductScreen> {
               height: 16.0,
             ),
             Expanded(
-                child: ListView.builder(
-                    itemCount: products.length,
-                    itemBuilder: (context, index) {
-                      return Padding(
-                        padding: EdgeInsets.only(bottom: 8.0),
-                        child: Card(
-                          elevation: 2.0,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10.0)),
-                          child: ListTile(
-                            title: Text(
-                              products[index]['name'],
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            subtitle: Text(products[index]['price']),
-                          ),
-                        ),
+              child: FutureBuilder(
+                  future: Provider.of<ProductProvider>(context, listen: false)
+                      .fetchProduct(),
+                  builder: (ctx, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(
+                        child: Text("Connecting Error "),
                       );
-                    }))
+                    } else {
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    }
+                  }),
+            )
           ],
         ),
       ),

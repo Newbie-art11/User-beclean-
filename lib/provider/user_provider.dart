@@ -4,7 +4,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:beclean_user/model/user_model.dart';
 
 class UserProvider with ChangeNotifier {
@@ -114,15 +113,12 @@ class UserProvider with ChangeNotifier {
       if (response.statusCode == 200) {
         final Map<String, dynamic> responseData = json.decode(response.body);
         if (responseData['success'] == true) {
-          // Parse and save the user data and token
           _user = responseData['data']['user'];
           _jwtToken = responseData['data']['access_token']['token'];
           _setResponseMessage(responseData['message'] ?? 'Login successful');
 
-          // Save the token to SharedPreferences
           final prefs = await SharedPreferences.getInstance();
           await prefs.setString('jwtToken', _jwtToken!);
-
           log("User logged in successfully with ID: ");
           log("JWT Token: $_jwtToken");
           notifyListeners();
@@ -140,6 +136,35 @@ class UserProvider with ChangeNotifier {
           error: error, stackTrace: stackTrace, level: 1000);
     } finally {
       _setLoading(false);
+    }
+  }
+
+  Future<void> changeProfile(String name, String email, String phone) async {
+    dynamic token = getToken();
+    String urlProfile = 'http://beclean.unimal.link/api/v1/account';
+    _setLoading(true);
+    try {
+      final response = await http.post(
+        Uri.parse(urlProfile),
+        headers: {
+          'Authorization': 'Bearer $token',
+        },
+        body: {
+          'name': name,
+          'email': email,
+          'phone': phone,
+        },
+      );
+
+      if (response.statusCode == 200) {
+        log("${response.body}");
+        notifyListeners();
+      } else {
+        throw Exception('Failed to update profile');
+      }
+    } catch (error) {
+      print('Error: $error');
+      throw error;
     }
   }
 
